@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Product>
+<style>
+    body * {
+        box-sizing: border-box !important;
+    }
+
+    .history-img {
+        width: 200px;
+        height: 150px;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .scrolling-wrapper {
+        max-height: 700px !important;
+        flex-wrap: wrap !important;
+    }
+
+    .card {
+        width: 200px;
+        height: 300px !important;
+        margin: 0;
+    }
+    .card-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        grid-gap:10px;
+    }
+</style>
+<div class="container">
+    <div class="scrolling-wrapper d-flex flex-column flex-wrap  align-items-center">
+
+        <div class="card-container">
+            @foreach (var item in Model)
+            {
+            <form method="post">
+                <div class="card">
+                    <div class="card-img">
+                        <img src="~/Img/bd570867.jpg" class="history-img" alt="">
+                    </div>
+                    <h1 class="card-subtitle">
+                        @item.Name
+                    </h1>
+                    <div class="card-footer">
+                        <h4>@item.Price</h4>
+                        <a asp-action="AddToShopCard" asp-route-id="@item.Id" class="btn btn-primary">Замовити</a>
+                    </div>
+                </div>
+            </form>
+                
+            }
+        </div>
+    </div>
+</div>
