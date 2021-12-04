@@ -19,25 +19,27 @@ namespace FillPizzaShop.Controllers
         {
             return View(_db.Products);
         }
+        [HttpGet]
         public async Task<IActionResult> Details(int?id)
         {
             return View(await _db.Products.FirstOrDefaultAsync(i=>i.Id==id));
         }
-        [HttpGet]
-        public async Task<IActionResult> AddToShopCard(int? id)
+        [HttpPost]
+        public async Task<IActionResult> Details(Product product)
         {
-            var curProduct = await _db.Products.FirstOrDefaultAsync(i => i.Id == id);
-
+            var findProduct = await _db.Products.FirstOrDefaultAsync(i=>i.Id==product.Id);
+            findProduct.Salt = product.Salt;
+            findProduct.Cheese = product.Cheese;
             ShopCart shopCart = new ShopCart
             {
-                Product = curProduct,
-                OrderId = _db.Orders.OrderBy(i=>i).LastOrDefault().Id,
-                
-            };
-          
-               var ShopCardContain =  _db.ShopCart.Include(i=>i.Product).FirstOrDefault(i => i.Product.Name == curProduct.Name);
+                Product = findProduct,
+                OrderId = _db.Orders.OrderBy(i => i).LastOrDefault().Id,
 
-            if (ShopCardContain!=null)
+            };
+
+            var ShopCardContain = _db.ShopCart.Include(i => i.Product).FirstOrDefault(i => i.Product.Name == findProduct.Name);
+
+            if (ShopCardContain != null)
             {
                 ShopCardContain.Count++;
                 _db.ShopCart.Update(ShopCardContain);
@@ -49,9 +51,9 @@ namespace FillPizzaShop.Controllers
                 _db.ShopCart.Add(shopCart);
                 _db.SaveChanges();
             }
-           
-            return View("Index",_db.Products);
-        }
-       
+
+            return View("Index", _db.Products);
+
+        }   
     }
 }

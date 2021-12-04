@@ -24,14 +24,9 @@ namespace FillPizzaShop.Controllers
         [Authorize(Roles="admin")]
         public IActionResult Admin()
         {
-            return View(_db.Orders.Include(i=>i.User).Include(i=>i.ShopCart));
+            return View(_db.Orders.Include(i=>i.User).Include(i=>i.OrderDetails));
         }
-        public async Task<IActionResult> Details(int id)
-        {
-            var shopcart = _db.ShopCart;/*.Include(i => i.Product).Where(i=>i.OrderId==id);*/
-
-            return View(shopcart);
-        }
+      
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)

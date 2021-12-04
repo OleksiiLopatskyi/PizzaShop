@@ -43,7 +43,7 @@ namespace FillPizzaShop.Controllers
                     await Authenticate(user);
 
                     if (user.RoleId == 1)
-                        return RedirectToAction("Admin", "Home");
+                        return RedirectToAction("Index", "Admin");
                     else return RedirectToAction("Index", "Home");
                 }
                 else ModelState.AddModelError("", "Login or(and) password is(are) incorrect");

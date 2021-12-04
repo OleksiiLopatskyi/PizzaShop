@@ -38,7 +38,7 @@ namespace FillPizzaShop
             };
             var Order = new Order
             {
-                ShopCart = new List<ShopCart>() {shopcart},
+                OrderDetails = new List<OrderDetail>() {},
                 User = new UserModel
                 {
                     Name = "oleksiy",

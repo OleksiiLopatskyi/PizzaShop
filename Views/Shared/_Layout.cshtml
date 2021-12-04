@@ -156,6 +156,11 @@
         <div class="page" style="display:flex;justify-content:center">
             <nav class="page__menu page__custom-settings menu">
                 <ul class="menu__list r-list">
+                    @if (User.IsInRole("admin"))
+                    {
+                        <li class="menu__group"><a asp-action="Index" asp-controller="Admin" class="menu__link r-link text-underlined">Admin</a></li>
+
+                    }
                     <li class="menu__group"><a asp-action="Index" asp-controller="Home" class="menu__link r-link text-underlined">Home</a></li>
                     <li class="menu__group"><a asp-action="Index" asp-controller="Products" class="menu__link r-link text-underlined">Products</a></li>
                     <li class="menu__group"><a asp-action="Index" asp-controller="ShopCart" class="menu__link r-link text-underlined">ShopCard</a></li>
