@@ -9,13 +9,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
-namespace FillPizzaShop.Controllers
+namespace FillPizzaShop.Areas.Controllers
 {
-    public class AccountController : Controller
+    [Area("Admin")]
+    public class AdminAccountController : Controller
     {
         private PizzaContext db;
-        public AccountController(PizzaContext shoppingContext)
+        public AdminAccountController(PizzaContext shoppingContext)
         {
             db = shoppingContext;
         }
@@ -25,28 +27,21 @@ namespace FillPizzaShop.Controllers
             return View();
         }
         [HttpGet]
-        [Route("[controller]/[action]")]
         public IActionResult Login()
         {
             return View();
         }
         [HttpPost]
-        [Route("[controller]/[action]")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                UserAccounts user = await db.UserAccounts.Include(u => u.Role)
-                    .FirstOrDefaultAsync(i => i.Name == model.Login || i.Email == model.Login || i.Phone==model.Login && i.Password == model.Password);
-                if (user != null)
+                if (model.Login == "admin"|| model.Login == "admin@gmail.com")
                 {
-                    if (user.RoleId == 1)
-                    {
-                        await Authenticate(user);
-                        return RedirectToAction("Index","Admin");
-                    }
+                    UserAccounts user = await db.UserAccounts.FirstOrDefaultAsync(i => i.Name == model.Login ||
+                    i.Email == model.Login);
                     await Authenticate(user);
-                     return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index","Home");
                 }
                 else ModelState.AddModelError("", "Login or(and) password is(are) incorrect");
             }
@@ -54,41 +49,11 @@ namespace FillPizzaShop.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/[action]")]
         public IActionResult Register()
         {
             return View();
         }
         [HttpPost]
-        [Route("[controller]/[action]")]
-        public async Task<IActionResult> Register(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                UserAccounts user = await db.UserAccounts.FirstOrDefaultAsync(u => u.Name == model.Name || u.Email == model.Email);
-                if (user == null)
-                {
-                    user = new UserAccounts
-                    {
-                        Email = model.Email,
-                        Phone = model.Phone,
-                        Name = model.Name,
-                        Password = model.Password,
-                        Type = UserType.regular
-                    };
-                    Role role = await db.Roles.FirstOrDefaultAsync(i => i.Name == "user");
-                    if (role != null)
-                        user.RoleId=2;
-
-                    db.UserAccounts.Add(user);
-                    await db.SaveChangesAsync();
-                    await Authenticate(user);
-                    return RedirectToAction("Index", "Home");
-                }
-                else ModelState.AddModelError("", "Incorrect login and(or)password");
-            }
-            return View(model);
-        }
         private async Task Authenticate(UserAccounts user)
         {
             var claims = new List<Claim>()

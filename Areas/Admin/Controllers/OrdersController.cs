@@ -12,22 +12,22 @@ namespace FillPizzaShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles="admin")]
-    public class ProductsController : Controller
+    public class OrdersController : Controller
     {
         private readonly PizzaContext _context;
 
-        public ProductsController(PizzaContext context)
+        public OrdersController(PizzaContext context)
         {
             _context = context;
         }
 
-        // GET: Admin/Products
+        // GET: Admin/Orders
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            return View(await _context.Orders.Include(i=>i.User).OrderByDescending(i=>i.Date).ToListAsync());
         }
 
-        // GET: Admin/Products/Details/5
+        // GET: Admin/Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,40 +35,39 @@ namespace FillPizzaShop.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+            var order = _context.OrderDetails
+                .Where(m => m.OrderId == id);
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(order);
         }
 
-        // GET: Admin/Products/Create
+        // GET: Admin/Orders/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/Products/Create
+        // POST: Admin/Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Image,Description,Price,Type,Salt,Cheese")] Product product)
+        public async Task<IActionResult> Create([Bind("Id")] Order order)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                _context.Add(order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(order);
         }
 
-        // GET: Admin/Products/Edit/5
-     
+        // GET: Admin/Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,22 +75,22 @@ namespace FillPizzaShop.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
             {
                 return NotFound();
             }
-            return View(product);
+            return View(order);
         }
 
-        // POST: Admin/Products/Edit/5
+        // POST: Admin/Orders/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Image,Description,Price,Type,Discount,HasDiscount")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id")] Order order)
         {
-            if (id != product.Id)
+            if (id != order.Id)
             {
                 return NotFound();
             }
@@ -100,12 +99,12 @@ namespace FillPizzaShop.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(product);
+                    _context.Update(order);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.Id))
+                    if (!OrderExists(order.Id))
                     {
                         return NotFound();
                     }
@@ -116,10 +115,10 @@ namespace FillPizzaShop.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(order);
         }
 
-        // GET: Admin/Products/Delete/5
+        // GET: Admin/Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,30 +126,30 @@ namespace FillPizzaShop.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
+            var order = await _context.Orders
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(order);
         }
 
-        // POST: Admin/Products/Delete/5
+        // POST: Admin/Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
+            var order = await _context.Orders.FindAsync(id);
+            _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExists(int id)
+        private bool OrderExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return _context.Orders.Any(e => e.Id == id);
         }
     }
 }

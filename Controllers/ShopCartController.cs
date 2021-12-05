@@ -41,15 +41,17 @@ namespace FillPizzaShop.Controllers
         [HttpPost]
         public IActionResult CreateOrder(UserModel user)
         {
+            float OrderPrice = 0; 
             var shopCart = _db.ShopCart.Include(i => i.Product);
             List<OrderDetail> details = new List<OrderDetail>();
             foreach (var item in shopCart)
             {
+                var currentItemPrice = item.TotalPrice * item.Count;
                     var OrderDetailsToAdd = new OrderDetail
                     {
                         ProductName = item.Product.Name,
                         ProductCount = item.Count,
-                        Price = item.TotalPrice,
+                        Price = currentItemPrice,
                     };
                 if (item.Product.Cheese)
                 {
@@ -61,12 +63,15 @@ namespace FillPizzaShop.Controllers
                     OrderDetailsToAdd.ProductAdditionals += "Salt ";
                     OrderDetailsToAdd.Price += 15;
                 } 
+                 OrderPrice += currentItemPrice;
                 details.Add(OrderDetailsToAdd);
             }
             Order order = new Order
             {
+                Date = DateTime.Now,
                 OrderDetails = details,
-                User = user
+                User = user,
+                OrderPrice = OrderPrice
             };
 
             _db.Orders.Add(order);

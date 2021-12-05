@@ -154,19 +154,24 @@
         <div class="card-container">
             @foreach (var item in Model)
             {
-                <div class="card">
+            <div class="card">
 
-                    <div class="imgBox">
-                        <img src="https://www.corsair.com/corsairmedia/sys_master/productcontent/CH-9300011-NA-M65_PRO_RGB_BLK_04.png" alt="mouse corsair" class="mouse">
-                    </div>
-
-                    <div class="contentBox">
-                        <h3>@item.Name</h3>
-                        <h2 class="price">@item.Price €</h2>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="buy">Buy Now</a>
-                    </div>
-
+                <div class="imgBox">
+                    <img src="@item.Image" alt="mouse corsair" class="mouse">
                 </div>
+                @if (item.HasDiscount && User.HasClaim(i => i.Type == "userType" && i.Value == "golden"))
+                {
+                    <p style="margin:0;color:red;position:absolute;left:123px;top:321px">Скидка -@item.Discount%</p>
+                }
+                <div class="contentBox">
+                    <h3>@item.Name</h3>
+
+
+                    <h2 class="price">@item.Price €</h2>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="buy">Buy Now</a>
+                </div>
+
+            </div>
             }
             @*   @foreach (var item in Model)
         {

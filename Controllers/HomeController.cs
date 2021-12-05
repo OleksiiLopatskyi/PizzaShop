@@ -21,12 +21,6 @@ namespace FillPizzaShop.Controllers
             _logger = logger;
             _db = context;
         }
-        [Authorize(Roles="admin")]
-        public IActionResult Admin()
-        {
-            return View(_db.Orders.Include(i=>i.User).Include(i=>i.OrderDetails));
-        }
-      
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
@@ -34,7 +28,10 @@ namespace FillPizzaShop.Controllers
 
             return View();
         }
-
+        public IActionResult Discount()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();
