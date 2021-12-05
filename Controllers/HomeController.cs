@@ -21,17 +21,6 @@ namespace FillPizzaShop.Controllers
             _logger = logger;
             _db = context;
         }
-        [Authorize(Roles="admin")]
-        public IActionResult Admin()
-        {
-            return View(_db.Orders.Include(i=>i.User).Include(i=>i.ShopCart));
-        }
-        public async Task<IActionResult> Details(int id)
-        {
-            var shopcart = _db.ShopCart;/*.Include(i => i.Product).Where(i=>i.OrderId==id);*/
-
-            return View(shopcart);
-        }
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
@@ -39,7 +28,10 @@ namespace FillPizzaShop.Controllers
 
             return View();
         }
-
+        public IActionResult Discount()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

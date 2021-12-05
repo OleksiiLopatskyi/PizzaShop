@@ -1,0 +1,65 @@
+﻿@model IEnumerable<FillPizzaShop.Models.Order>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                Address
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Phone
+            </th>
+            <th>
+                Price
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(i => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(i => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(i => item.User.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(i => item.User.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(i => item.User.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(i => item.OrderPrice)
+            </td>
+
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -19,6 +19,10 @@ namespace FillPizzaShop.Controllers
         public  IActionResult Index()
         {
             IEnumerable<ShopCart> shopCarts = _db.ShopCart.Include(i=>i.Product);
+            foreach (var item in shopCarts)
+            {
+                item.TotalPrice = item.Count * item.Product.Price;
+            }
             return View(shopCarts);
         }
         [HttpGet]
@@ -37,11 +41,39 @@ namespace FillPizzaShop.Controllers
         [HttpPost]
         public IActionResult CreateOrder(UserModel user)
         {
+            float OrderPrice = 0; 
+            var shopCart = _db.ShopCart.Include(i => i.Product);
+            List<OrderDetail> details = new List<OrderDetail>();
+            foreach (var item in shopCart)
+            {
+                var currentItemPrice = item.TotalPrice * item.Count;
+                    var OrderDetailsToAdd = new OrderDetail
+                    {
+                        ProductName = item.Product.Name,
+                        ProductCount = item.Count,
+                        Price = currentItemPrice,
+                    };
+                if (item.Product.Cheese)
+                {
+                    OrderDetailsToAdd.ProductAdditionals += "Cheese ";
+                    OrderDetailsToAdd.Price += 35;
+                }
+                if (item.Product.Salt)
+                {
+                    OrderDetailsToAdd.ProductAdditionals += "Salt ";
+                    OrderDetailsToAdd.Price += 15;
+                } 
+                 OrderPrice += currentItemPrice;
+                details.Add(OrderDetailsToAdd);
+            }
             Order order = new Order
             {
-                ShopCart = _db.ShopCart.Include(i=>i.Product).ToList(),
-                User = user
+                Date = DateTime.Now,
+                OrderDetails = details,
+                User = user,
+                OrderPrice = OrderPrice
             };
+
             _db.Orders.Add(order);
             _db.SaveChanges();
             _db.ShopCart.RemoveRange(_db.ShopCart);
@@ -52,8 +84,16 @@ namespace FillPizzaShop.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var shopCartItem = await _db.ShopCart.FirstOrDefaultAsync(i=>i.Id==id);
-            _db.ShopCart.Remove(shopCartItem);
-            _db.SaveChanges();
+            if (shopCartItem.Count > 1)
+            {
+                shopCartItem.Count -= 1;
+                _db.SaveChanges();
+            }
+            else
+            {
+                _db.ShopCart.Remove(shopCartItem);
+                _db.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
       

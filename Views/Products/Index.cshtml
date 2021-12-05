@@ -2,6 +2,11 @@
 <style>
     body * {
         box-sizing: border-box !important;
+       
+    }
+    body {
+        color: #444;
+        background: linear-gradient(to bottom right, #67b26f, #4ca2cd);
     }
 
     .history-img {
@@ -16,11 +21,11 @@
         flex-wrap: wrap !important;
     }
 
-    .card {
+    @*.card {
         width: 200px;
         height: 300px !important;
         margin: 0;
-    }
+    }*@
     .card-container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -29,29 +34,163 @@
         text-align: center;
         grid-gap:10px;
     }
+    .card {
+        position: relative;
+        width: 320px;
+        height: 480px;
+        background: #191919;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            width: 100%;
+            height: 100%;
+            background: #ffce00;
+            transform: skewY(345deg);
+            transition: 0.5s;
+        }
+
+        .card:hover::before {
+            top: -70%;
+            transform: skewY(390deg);
+        }
+
+        .card::after {
+            content: "CORSAIR";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            font-weight: 600;
+            font-size: 6em;
+            color: rgba(0, 0, 0, 0.1);
+        }
+
+        .card .imgBox {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 20px;
+            z-index: 1;
+        }
+        .card .imgBox {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 20px;
+            z-index: 1;
+        }
+
+        
+.card .imgBox img {
+    max-width: 100%;
+
+    transition: .5s;
+}
+
+.card:hover .imgBox img {
+    max-width: 50%;
+
+}   
+        .card .contentBox {
+            position: relative;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 2;
+        }
+
+            .card .contentBox h3 {
+                font-size: 18px;
+                color: white;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .card .contentBox .price {
+                font-size: 24px;
+                color: white;
+                font-weight: 700;
+                letter-spacing: 1px;
+            }
+
+            .card .contentBox .buy {
+                position: relative;
+                top: 100px;
+                opacity: 0;
+                padding: 10px 30px;
+                margin-top: 15px;
+                color: #000000;
+                text-decoration: none;
+                background: #ffce00;
+                border-radius: 30px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: 0.5s;
+            }
+
+        .card:hover .contentBox .buy {
+            top: 0;
+            opacity: 1;
+        }
+
+    .mouse {
+        height: 300px;
+        width: auto;
+    }
 </style>
 <div class="container">
     <div class="scrolling-wrapper d-flex flex-column flex-wrap  align-items-center">
-
         <div class="card-container">
             @foreach (var item in Model)
             {
-            <form method="post">
-                <div class="card">
-                    <div class="card-img">
-                        <img src="~/Img/bd570867.jpg" class="history-img" alt="">
-                    </div>
-                    <h1 class="card-subtitle">
-                        @item.Name
-                    </h1>
-                    <div class="card-footer">
-                        <h4>@item.Price</h4>
-                        <a asp-action="AddToShopCard" asp-route-id="@item.Id" class="btn btn-primary">Замовити</a>
-                    </div>
+            <div class="card">
+
+                <div class="imgBox">
+                    <img src="@item.Image" alt="mouse corsair" class="mouse">
                 </div>
-            </form>
-                
+                @if (item.HasDiscount && User.HasClaim(i => i.Type == "userType" && i.Value == "golden"))
+                {
+                    <p style="margin:0;color:red;position:absolute;left:123px;top:321px">Скидка -@item.Discount%</p>
+                }
+                <div class="contentBox">
+                    <h3>@item.Name</h3>
+
+
+                    <h2 class="price">@item.Price €</h2>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="buy">Buy Now</a>
+                </div>
+
+            </div>
             }
+            @*   @foreach (var item in Model)
+        {
+        <form method="post">
+            <div class="card">
+                <div class="card-img">
+                    <img src="~/Img/bd570867.jpg" class="history-img" alt="">
+                </div>
+                <h1 class="card-subtitle">
+                    @item.Name
+                </h1>
+                <div class="card-footer">
+                    <h4>@item.Price</h4>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Замовити</a>
+                </div>
+            </div>
+        </form>
+
+        }*@
         </div>
     </div>
 </div>

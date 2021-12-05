@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-
 <body>
     <style>
         .r-link {
@@ -157,29 +156,21 @@
         <div class="page" style="display:flex;justify-content:center">
             <nav class="page__menu page__custom-settings menu">
                 <ul class="menu__list r-list">
-
-                    <li class="menu__group"><a asp-action="Index" asp-controller="Home" class="menu__link r-link text-underlined">Home</a></li>
-                    <li class="menu__group"><a asp-action="Index" asp-controller="Products" class="menu__link r-link text-underlined">Products</a></li>
-                    <li class="menu__group"><a asp-action="Index" asp-controller="ShopCart" class="menu__link r-link text-underlined">ShopCard</a></li>
-
-                    @if (User.HasClaim(i => i.Type == "userType" && i.Value == "golden"))
-                    {
-                        <li class="menu__group"><a asp-action="Discount" asp-controller="Home" class="menu__link r-link text-underlined">Discount</a></li>
-                    }
+                    <li class="menu__group"><a asp-action="Index" asp-controller="Home" asp-area="Admin" class="menu__link r-link text-underlined">Admin</a></li>
+                    <li class="menu__group"><a asp-action="Index" asp-controller="Orders" asp-area="Admin" class="menu__link r-link text-underlined">Orders</a></li>
+                    <li class="menu__group"><a asp-action="Index" asp-controller="Products" asp-area="Admin" class="menu__link r-link text-underlined">Products</a></li>
+                    <li class="menu__group"><a asp-action="Index" asp-controller="UserAccounts" asp-area="Admin" class="menu__link r-link text-underlined">Users</a></li>
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="menu__group"><a asp-action="Logout" asp-controller="Account" class="menu__link r-link text-underlined">Logout</a></li>
+                        <li class="menu__group"><a  asp-action="Logout" asp-controller="AdminAccount" asp-area="Admin" class="menu__link r-link text-underlined">Logout</a></li>
                     }
                     else
                     {
-                        <li class="menu__group"><a asp-action="Login" asp-controller="Account" class="menu__link r-link text-underlined">Login</a></li>
+                        <li class="menu__group"><a  asp-action="Login" asp-controller="AdminAccount" asp-area="Admin" class="menu__link r-link text-underlined">Login</a></li>
 
                     }
-
-
                 </ul>
-                
             </nav>
         </div>
     </header>

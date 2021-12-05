@@ -14,6 +14,7 @@ namespace FillPizzaShop.Models
         public DbSet<Product> Products { get; set; }
         public DbSet<ShopCart> ShopCart { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
         public PizzaContext(DbContextOptions<PizzaContext>options):base(options)
         {
             Database.EnsureCreated();

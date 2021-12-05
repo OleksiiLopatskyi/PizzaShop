@@ -4,14 +4,16 @@ using FillPizzaShop.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FillPizzaShop.Migrations
 {
     [DbContext(typeof(PizzaContext))]
-    partial class PizzaContextModelSnapshot : ModelSnapshot
+    [Migration("20211204111801_Init2")]
+    partial class Init2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,12 +28,6 @@ namespace FillPizzaShop.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<float>("OrderPrice")
-                        .HasColumnType("real");
-
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
@@ -42,35 +38,6 @@ namespace FillPizzaShop.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("FillPizzaShop.Models.OrderDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
-
-                    b.Property<string>("ProductAdditionals")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProductName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderDetails");
-                });
-
             modelBuilder.Entity("FillPizzaShop.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -78,19 +45,7 @@ namespace FillPizzaShop.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("Cheese")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Discount")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("HasDiscount")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -98,9 +53,6 @@ namespace FillPizzaShop.Migrations
 
                     b.Property<float>("Price")
                         .HasColumnType("real");
-
-                    b.Property<bool>("Salt")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -157,6 +109,8 @@ namespace FillPizzaShop.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
@@ -237,17 +191,14 @@ namespace FillPizzaShop.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FillPizzaShop.Models.OrderDetail", b =>
+            modelBuilder.Entity("FillPizzaShop.Models.ShopCart", b =>
                 {
                     b.HasOne("FillPizzaShop.Models.Order", null)
-                        .WithMany("OrderDetails")
+                        .WithMany("ShopCart")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("FillPizzaShop.Models.ShopCart", b =>
-                {
                     b.HasOne("FillPizzaShop.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId");
@@ -266,7 +217,7 @@ namespace FillPizzaShop.Migrations
 
             modelBuilder.Entity("FillPizzaShop.Models.Order", b =>
                 {
-                    b.Navigation("OrderDetails");
+                    b.Navigation("ShopCart");
                 });
 
             modelBuilder.Entity("FillPizzaShop.Models.Role", b =>
