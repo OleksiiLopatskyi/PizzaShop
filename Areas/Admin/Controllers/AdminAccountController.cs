@@ -46,13 +46,7 @@ namespace FillPizzaShop.Areas.Controllers
                 else ModelState.AddModelError("", "Login or(and) password is(are) incorrect");
             }
             return View(model);
-        }
-
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
+        }       
         [HttpPost]
         private async Task Authenticate(UserAccounts user)
         {

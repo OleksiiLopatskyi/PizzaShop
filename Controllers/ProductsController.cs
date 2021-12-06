@@ -36,7 +36,7 @@ namespace FillPizzaShop.Controllers
         public async Task<IActionResult> Details(int?id)
         {
             var product = await _db.Products.FirstOrDefaultAsync(i => i.Id == id);
-            if (User.HasClaim(i => i.Type == "userType" && i.Value == "golden"))
+            if (User.HasClaim(i => i.Type == "userType" && i.Value == "golden")&&product.HasDiscount)
             {
                 product.Price = product.Price-(product.Price * product.Discount / 100);
             }
@@ -45,11 +45,7 @@ namespace FillPizzaShop.Controllers
         [HttpPost]
         public async Task<IActionResult> Details(Product product)
         {
-            var findProduct = await _db.Products.FirstOrDefaultAsync(i=>i.Id==product.Id);
-            if (User.HasClaim(i => i.Type == "userType" && i.Value == "golden"))
-            {
-                findProduct.Price = findProduct.Price - (findProduct.Price * findProduct.Discount / 100);
-            }
+            var findProduct = await _db.Products.FirstOrDefaultAsync(i=>i.Id==product.Id);          
             findProduct.Salt = product.Salt;
             findProduct.Cheese = product.Cheese;
             ShopCart shopCart = new ShopCart
@@ -74,7 +70,7 @@ namespace FillPizzaShop.Controllers
                 _db.SaveChanges();
             }
 
-            return View("Index", _db.Products);
+            return RedirectToAction("Index");
 
         }   
     }

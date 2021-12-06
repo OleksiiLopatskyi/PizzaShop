@@ -21,6 +21,10 @@ namespace FillPizzaShop.Controllers
             IEnumerable<ShopCart> shopCarts = _db.ShopCart.Include(i=>i.Product);
             foreach (var item in shopCarts)
             {
+                if (User.HasClaim(i => i.Type == "userType" && i.Value == "golden"))
+                {
+                    item.Product.Price = item.Product.Price - (item.Product.Price * item.Product.Discount / 100);
+                }
                 item.TotalPrice = item.Count * item.Product.Price;
             }
             return View(shopCarts);
@@ -51,21 +55,22 @@ namespace FillPizzaShop.Controllers
                     {
                         ProductName = item.Product.Name,
                         ProductCount = item.Count,
-                        Price = currentItemPrice,
                     };
                 if (item.Product.Cheese)
                 {
                     OrderDetailsToAdd.ProductAdditionals += "Cheese ";
-                    OrderDetailsToAdd.Price += 35;
+                    currentItemPrice += 35;
                 }
                 if (item.Product.Salt)
                 {
                     OrderDetailsToAdd.ProductAdditionals += "Salt ";
-                    OrderDetailsToAdd.Price += 15;
+                    currentItemPrice += 15;
                 } 
-                 OrderPrice += currentItemPrice;
+                 OrderPrice += currentItemPrice-(currentItemPrice*item.Product.Discount/100);
+                OrderDetailsToAdd.Price=currentItemPrice;
                 details.Add(OrderDetailsToAdd);
             }
+         
             Order order = new Order
             {
                 Date = DateTime.Now,

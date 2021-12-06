@@ -30,7 +30,7 @@ namespace FillPizzaShop.Controllers
         }
         public IActionResult Discount()
         {
-            return View();
+            return View(_db.Products.Where(i=>i.HasDiscount));
         }
         public IActionResult Privacy()
         {
